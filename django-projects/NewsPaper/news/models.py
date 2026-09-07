@@ -9,8 +9,6 @@ class Author(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    objects = models.Manager
-
     def update_rating(self):
         # Выбираем все посты автора
         posts = Post.objects.filter(author=self)
@@ -34,8 +32,6 @@ class Author(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
-    objects = models.Manager
-
 
 class Post(models.Model):
     type_article = 'A'
@@ -55,8 +51,6 @@ class Post(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     categories = models.ManyToManyField(Category, through='PostCategory')
 
-    objects = models.Manager
-
     def dislike(self):
         self.rating -= 1
         self.save()
@@ -68,12 +62,13 @@ class Post(models.Model):
     def preview(self):
         return self.text[0:124] + '...'
 
+    def __str__(self):
+        return f'{self.post_type} {self.preview()}'
+
 
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
-    objects = models.Manager
 
 
 class Comment(models.Model):
@@ -83,8 +78,6 @@ class Comment(models.Model):
 
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    objects = models.Manager
 
     def dislike(self):
         self.rating -= 1
