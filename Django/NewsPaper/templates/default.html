@@ -1,0 +1,63 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>News Paper - {% block title %} {% endblock title %}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg" style="background-color: #e7e7e7;" data-bs-theme="light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">News Paper</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/posts/">Posts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/posts/search/">Search</a>
+                    </li>
+                </ul>
+                <div class="d-flex flex-row align-items-center" style="display: flex; gap: 10px;">
+                    {% if user.username %}
+                        {{ user.username }}
+                        {% if is_user_author != None and not is_user_author %}
+                            <a href="/posts/add_user_to_authors/" class="btn btn-light btn-sm" role="button">Стать автором</a>
+                        {% endif %}
+                        <a href="/accounts/logout/">
+                            <img src="{% static 'icons/box-arrow-right.svg' %}" width="25" height="25">
+                        </a>
+                    {% endif %}
+                    <a href="/admin/">
+                        <img src="{% static 'icons/gear.svg' %}" width="22" height="22">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    {% block content %}
+    {% endblock content %}
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+</body>
+
+</html>

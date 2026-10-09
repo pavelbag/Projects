@@ -1,0 +1,81 @@
+{% extends 'account/base.html' %}
+
+{% load i18n %}
+
+{% load allauth %}
+
+{% load custom_filters %}
+
+{% block title %}
+Signup
+{% endblock title %}
+
+{% block content %}
+
+<div class="row" style="height: 50px; width: 50px;"></div>
+
+<div class="col-3 mx-auto">
+
+    <div class="card">
+        <div class="card-body">
+
+            <div class="row text-center">
+                <h4>Регистрация</h4>
+            </div>
+
+            <p>
+                {% blocktrans with provider_name=account.get_provider.name site_name=site.name %}
+                    You are about to use your {{provider_name}} account to login to {{site_name}}. As a final step, please complete the following form:
+                {% endblocktrans %}
+            </p>
+
+            {% url 'socialaccount_signup' as action_url %}
+            {% element form form=form method="post" action=action_url %}
+                {% slot body %}
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            {% if field.widget_type == 'checkbox' %}
+                                <div class="form-check">
+                                    <label class="form-check-label">{{ field.label }}</label>
+                                    {{ field|filter_bootstrap_field }}
+                                </div>
+                            {% else %}
+                                <div class="row">
+                                    <label class="form-label">{{ field.label }}</label>
+                                </div>
+                                {{ field|filter_bootstrap_field }}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    {{ redirect_field }}
+                {% endslot %}
+                {% slot actions %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger">Продолжить</button>
+                    </div>
+                {% endslot %}
+            {% endelement %}
+
+            <p></p>
+
+            <p>
+                <ul>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li class="text-danger">{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </p>
+
+            {% for error in form.non_field_errors %}
+                <p class="text-danger">{{ error }}</p>
+            {% endfor %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}

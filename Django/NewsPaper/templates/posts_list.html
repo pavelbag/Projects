@@ -1,0 +1,98 @@
+{% extends 'default.html' %}
+
+{% load custom_filters %}
+{% load static %}
+
+{% block title %}
+Posts List
+{% endblock title %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="row">
+        <div class="text-left">
+            <p><h4>Все посты (всего {{ posts_count }})</h4></p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="text-center">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Заголовок</th>
+                        <th scope="col">Дата</th>
+                        <th scope="col">Текст</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                {% if posts %}
+                    <tbody class="table-group-divider">
+                        {% for post in posts %}
+                            <tr>
+                                <td>
+                                    <a href="/posts/{{ post.pk }}/" class="link-dark link-offset-3 link-underline-opacity-25 link-underline-opacity-100-hover">
+                                        {{ post.title|filter_censor }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ post.date|date:'d.m.Y' }}
+                                </td>
+                                <td>
+                                    {{ post.text|filter_censor|truncatechars:20 }}
+                                </td>
+                                <td>
+                                    <a class="icon-link" href="/posts/{{ post.pk }}/edit/">
+                                        <svg class="bi" aria-hidden="true"><use href="{% static 'icons/pencil-square.svg' %}"/></svg>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a class="icon-link" href="/posts/{{ post.pk }}/delete/">
+                                        <svg class="bi" aria-hidden="true"><use href="{% static 'icons/trash.svg' %}"/></svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="text-center">
+            <nav aria-label="...">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+                        {% if page_obj.previous_page_number != 1 %}
+                            <li class="page-item"><a class="page-link">...</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+                        {% endif %}
+                    {% endif %}
+                    <li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }}</a></li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
+                        {% if paginator.num_pages != page_obj.next_page_number %}
+                            <li class="page-item"><a class="page-link">...</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="text-left">
+            <a href="/news/create/" class="btn btn-primary" role="button">Новость +</a>
+            <a href="/articles/create/" class="btn btn-primary" role="button">Статья +</a>
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}

@@ -1,0 +1,99 @@
+{% extends 'account/base.html' %}
+
+{% load i18n %}
+
+{% load account %}
+{% load allauth %}
+{% load socialaccount %}
+
+{% load custom_filters %}
+
+{% block title %}
+Login
+{% endblock title %}
+
+{% block content %}
+
+<div class="row" style="height: 50px; width: 50px;"></div>
+
+<div class="col-3 mx-auto">
+
+    <div class="card">
+        <div class="card-body">
+
+            <div class="row text-center">
+                <h4>Авторизация</h4>
+            </div>
+
+            {% element form form=form method="post" action=login_url tags="entrance,login" %}
+                {% slot body %}
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            {% if field.widget_type == 'checkbox' %}
+                                <div class="form-check">
+                                    <label class="form-check-label">{{ field.label }}</label>
+                                    {{ field|filter_bootstrap_field }}
+                                </div>
+                            {% elif field.widget_type == 'password' %}
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">{{ field.label }}</label>
+                                    </div>
+                                    <div class="col text-end">
+                                        <a href="/accounts/password/reset/" class="link-underline-light">Забыли пароль?</a>
+                                    </div>
+                                </div>
+                                {{ field|filter_bootstrap_field }}
+                            {% else %}
+                                <div class="row">
+                                    <label class="form-label">{{ field.label }}</label>
+                                </div>
+                                {{ field|filter_bootstrap_field }}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    {{ redirect_field }}
+                {% endslot %}
+                {% slot actions %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger">Войти</button>
+                    </div>
+                {% endslot %}
+            {% endelement %}
+
+            <p></p>
+
+            <div class="d-grid gap-2">
+                <a href="{{ signup_url }}" class="btn btn-outline-secondary" role="button">Регистрация</a>
+            </div>
+
+            <p></p>
+
+            <div class="row">
+                <div class="col text-center">
+                    или войдите через
+                </div>
+            </div>
+
+            <p></p>
+
+            <form method="post" action="{% provider_login_url 'yandex' process='login' %}">
+                {% csrf_token %}
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-outline-secondary">Yandex ID</button>
+                </div>
+            </form>
+
+            <p></p>
+
+            {% for error in form.non_field_errors %}
+                <p class="text-danger">{{ error }}</p>
+            {% endfor %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}
